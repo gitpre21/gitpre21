@@ -1,16 +1,13 @@
 <?php
-// reset_users.php
 include 'db.php';
 
-// Clear existing users (optional)
 $conn->query("DELETE FROM users");
 
-// Define default users
 $users = [
     [
         'role'     => 'Admin',
         'username' => 'admin',
-        'password' => 'admin123', // login password
+        'password' => 'admin123',
         'first_name' => 'Super',
         'last_name'  => 'Admin'
     ],
@@ -30,17 +27,13 @@ $users = [
     ]
 ];
 
-// Loop through users and insert into DB
 foreach ($users as $user) {
 
-    // Get role_id
     $roleRow = $conn->query("SELECT role_id FROM roles WHERE role_name='{$user['role']}' LIMIT 1")->fetch_assoc();
     $role_id = $roleRow['role_id'];
 
-    // Hash password
     $hashed_password = password_hash($user['password'], PASSWORD_DEFAULT);
 
-    // Insert user
     $stmt = $conn->prepare("
         INSERT INTO users (role_id, username, password, first_name, last_name)
         VALUES (?, ?, ?, ?, ?)
